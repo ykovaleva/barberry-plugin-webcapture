@@ -47,8 +47,7 @@ class Monitor implements InterfaceMonitor
      */
     protected function phantomjsInstalled()
     {
-        $testCommand = exec('phantomjs');
-        return (strstr($testCommand, 'command not found')) ? true : false;
+        return preg_match('/^\/\w+/', exec("which phantomjs")) ? true : false;
     }
 
     /**
