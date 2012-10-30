@@ -6,6 +6,8 @@ use Barberry\Plugin\InterfaceCommand;
 
 class Command implements InterfaceCommand
 {
+    const DEFAULT_ZOOM = 1;
+
     private $zoom;
     private $paperFormat;
     private $commandForImagemagick;
@@ -25,20 +27,21 @@ class Command implements InterfaceCommand
      */
     public function configure($commandString)
     {
-        $params = explode('_', $commandString);
+        $commands = explode('~', $commandString);
 
+        $params = explode('_', $commands[0]);
         foreach ($params as $param) {
-            if (preg_match('/^([\d]*)x([\d]*)$/', $param, $match)) {
-                $this->commandForImagemagick = $match[0];
-            }
-            if (preg_match('/^(0.[\d]+)zoom*$/', $param, $match)) {
+            if (preg_match('/^(0.[\d]+)$/', $param, $match)) {
                 $this->zoom = (float)$match[1];
             }
             $formats = implode('|', self::$allowedPaperFormats);
-            if (preg_match('/^(' . $formats . ')-format*$/', $param, $match)) {
+            if (preg_match('/^(' . $formats . ')$/', $param, $match)) {
                 $this->paperFormat = $match[1];
             }
         }
+
+        $this->commandForImagemagick = isset($commands[1]) ? $commands[1] : null;
+
         return $this;
     }
 
@@ -60,19 +63,19 @@ class Command implements InterfaceCommand
 
     public function zoom()
     {
-        return $this->zoom;
+        return is_null($this->zoom) ? self::DEFAULT_ZOOM : $this->zoom;
     }
 
     public function paperFormat()
     {
-        return in_array($this->paperFormat, self::$allowedPaperFormats) ? $this->paperFormat : null;
+        return in_array($this->paperFormat, self::$allowedPaperFormats) ? $this->paperFormat : '';
     }
 
     public function __toString()
     {
-        $string = is_null($this->commandForImagemagick()) ? '' : $this->commandForImagemagick();
-        $string .= is_null($this->zoom()) ? '' : '_' . $this->zoom() . 'zoom';
-        $string .= is_null($this->paperFormat()) ? '' : '_' . $this->paperFormat() . '-format';
+        $string = is_null($this->zoom()) ? '' : '_' . $this->zoom();
+        $string .= is_null($this->paperFormat()) ? '' : '_' . $this->paperFormat();
+        $string .= is_null($this->commandForImagemagick()) ? '' : '~' . $this->commandForImagemagick();
 
         return $string;
     }
