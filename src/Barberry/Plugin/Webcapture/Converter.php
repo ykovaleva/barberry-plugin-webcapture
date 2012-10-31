@@ -26,7 +26,7 @@ class Converter implements Plugin\InterfaceConverter
             $bin = $this->runPhantomJs(
                  'png', $bin, $command->viewportSize(), $command->zoom(), $command->paperFormat()
             );
-            $bin = $this->resizeWithImagemagick($bin, $command->viewportSize(), $command->commandForImagemagick());
+            $bin = $this->resizeWithImagemagick($bin, $command->commandForImagemagick());
         } else {
             $extension = $this->targetContentType->standartExtention();
             $bin = $this->runPhantomJs(
