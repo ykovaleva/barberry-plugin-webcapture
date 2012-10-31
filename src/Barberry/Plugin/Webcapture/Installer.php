@@ -31,7 +31,7 @@ PHP
             );
         }
 
-        $monitorComposer->writeClassDeclaration('Webcapture', "parent::_construct('{$this->tempDir}')");
+        $monitorComposer->writeClassDeclaration('Webcapture', "parent::__construct('{$this->tempDir}')");
     }
 
     public static function directions()
