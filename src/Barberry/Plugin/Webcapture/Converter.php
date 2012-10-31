@@ -21,21 +21,20 @@ class Converter implements Plugin\InterfaceConverter
 
     public function convert($bin, Plugin\InterfaceCommand $command = null)
     {
-        if (!is_null($command->commandForImagemagick())) {
-            // get png for imagemagick
-            $bin = $this->runPhantomJs(
-                 'png', $bin, $command->viewportSize(), $command->zoom(), $command->paperFormat()
-            );
-            $bin = $this->resizeWithImagemagick($bin, $command->commandForImagemagick());
-        } else {
-            $extension = $this->targetContentType->standartExtention();
-            $bin = $this->runPhantomJs(
-                $extension, $bin, $command->viewportSize(), $command->zoom(), $command->paperFormat()
-            );
-        }
+        $bin = $this->runPhantomJs(
+            is_null($command->commandForImagemagick()) ? $this->targetContentType->standartExtention() : 'png',
+            $bin,
+            $command->viewportSize(),
+            $command->zoom(),
+            $command->paperFormat()
+        );
 
         if (is_null($bin)) {
             throw new PhantomJsException('can\'t create destination file.');
+        }
+
+        if (!is_null($command->commandForImagemagick())) {
+            $bin = $this->resizeWithImagemagick($bin, $command->commandForImagemagick());
         }
 
         return $bin;
@@ -66,8 +65,9 @@ class Converter implements Plugin\InterfaceConverter
     }
 
     /**
-     * @param $bin file to be processed
-     * @param $commandString
+     * @param string $bin file to be processed
+     * @param string $commandString
+     * @throws \Exception
      * @return string resized image
      */
     protected function resizeWithImagemagick($bin, $commandString)
@@ -75,16 +75,12 @@ class Converter implements Plugin\InterfaceConverter
         $from = ucfirst(ContentType::byString($bin)->standartExtention());
         $to = ucfirst($this->targetContentType->standartExtention());
         $directionClass = '\\Barberry\\Direction\\' . $from . 'To' . $to . 'Direction';
-
-        if (class_exists($directionClass)) {
-            $direction = new $directionClass($commandString);
-            return $direction->convert($bin);
-        } else {
-            throw new \Exception('Can\'t convert to requested direction.', 404);
-        }
+        $direction = new $directionClass($commandString);
+        return $direction->convert($bin);
     }
 
     /**
+     * @param string $extension
      * @return string temporary file name
      */
     private function createTempFile($extension)
