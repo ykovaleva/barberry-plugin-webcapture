@@ -1,0 +1,77 @@
+<?php
+
+namespace Barberry\Plugin\Webcapture;
+
+use Barberry\ContentType;
+
+class ConverterTest extends \PHPUnit_Framework_TestCase
+{
+    public function testThrowsExceptionWhenPhantomJsFailsToCreateDestinationFile()
+    {
+        $this->setExpectedException('Barberry\\Plugin\\Webcapture\\PhantomJsException');
+
+        $converter = $this->getMock(
+            'Barberry\\Plugin\\Webcapture\\Converter',
+            array('runPhantomJs'),
+            array(ContentType::jpeg(), null)
+        );
+        $converter->convert(self::bin(), self::command());
+    }
+
+    public function testConvertsUrlToPng()
+    {
+        $converter = self::converter(ContentType::png());
+        $result = $converter->convert(self::bin(), self::command());
+        $this->assertEquals(ContentType::png(), ContentType::byString($result));
+    }
+
+    public function testConvertsUrlToJpeg()
+    {
+        $converter = self::converter(ContentType::jpeg());
+        $result = $converter->convert(self::bin(), self::command());
+        $this->assertEquals(ContentType::jpeg(), ContentType::byString($result));
+    }
+
+    public function testConvertsUrlToGif()
+    {
+        $converter = self::converter(ContentType::gif());
+        $result = $converter->convert(self::bin(), self::command());
+        $this->assertEquals(ContentType::gif(), ContentType::byString($result));
+    }
+
+    public function testConvertsUrlToPdf()
+    {
+        $converter = self::converter(ContentType::pdf());
+        $result = $converter->convert(self::bin(), self::command());
+        $this->assertEquals(ContentType::pdf(), ContentType::byString($result));
+    }
+
+    public function testUtilizesExistingDirectionToExecuteImagemagickCommand()
+    {
+        include_once __DIR__ . '/FakePngToJpgDirection.php';
+        self::converter(ContentType::jpeg())->convert(self::bin(), self::commandWithImagemagickPart());
+        $this->assertTrue(\PngToJpgDirection::$hasBeenUtilized);
+    }
+
+    private static function converter($targetDirection)
+    {
+        return new Converter($targetDirection, __DIR__ . '/../tmp/');
+    }
+
+    private static function command()
+    {
+        $command = new Command();
+        return $command->configure('0.9zoom_tabloid');
+    }
+
+    private static function commandWithImagemagickPart()
+    {
+        $command = new Command();
+        return $command->configure('0.9_tabloid~100x200');
+    }
+
+    private static function bin()
+    {
+        return file_get_contents(__DIR__ . '/data/hiRcrQ');
+    }
+}

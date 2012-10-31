@@ -3,7 +3,8 @@
     "type": "barberry-plugin",
     "require": {
         "barberry/plugin-installer": "*",
-        "barberry/interfaces": "*"
+        "barberry/interfaces": "*",
+        "barberry/plugin-imagemagic": "*"
     },
     "minimum-stability": "dev",
     "authors": [
