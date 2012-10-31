@@ -24,6 +24,14 @@ class ConverterTest extends \PHPUnit_Framework_TestCase
         $converter->convert(self::bin(), self::command());
     }
 
+    public function testThrowsExceptionWhenPhantomJsOutputsMessages()
+    {
+        $this->setExpectedException('Barberry\\Plugin\\Webcapture\\PhantomJsException');
+
+        $converter = self::converter(ContentType::png());
+        $converter->convert(self::bin(false), self::command());
+    }
+
     public function testConvertsUrlToPng()
     {
         $converter = self::converter(ContentType::png());
@@ -76,8 +84,10 @@ class ConverterTest extends \PHPUnit_Framework_TestCase
         return $command->configure('1055x10_z0.9_tabloid~100x200');
     }
 
-    private static function bin()
+    private static function bin($realUrl = true)
     {
-        return file_get_contents(__DIR__ . '/data/hiRcrQ');
+        $dir = __DIR__ . '/data';
+        $fileName = $realUrl ? 'hiRcrQ' : 'iSyDze';
+        return file_get_contents($dir . '/' .  $fileName);
     }
 }

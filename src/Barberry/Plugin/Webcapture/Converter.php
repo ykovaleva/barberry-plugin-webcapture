@@ -47,7 +47,7 @@ class Converter implements Plugin\InterfaceConverter
         // undefined failure with phantom js, so try to create file with phantomjs 5 times
         $i = 0;
         do {
-            exec(
+            $phantomJs = exec(
                 'phantomjs ' . escapeshellarg($this->jsScriptFile) . ' '
                     . escapeshellarg($bin) . ' '
                     . escapeshellarg($tempFile) . ' '
@@ -55,6 +55,9 @@ class Converter implements Plugin\InterfaceConverter
                     . escapeshellarg($zoom). ' '
                     . escapeshellarg($paperFormat)
             );
+            if (strlen($phantomJs)) {
+                throw new PhantomJsException('phantom js failed to execute');
+            }
             $i++;
         } while ($i < 5 && !filesize($tempFile));
 
