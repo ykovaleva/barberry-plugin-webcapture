@@ -16,7 +16,7 @@ class Command implements InterfaceCommand
         'a4',
         'a5',
         'legal',
-        'latter',
+        'letter',
         'tabloid'
     );
 
@@ -80,11 +80,11 @@ class Command implements InterfaceCommand
 
     public function __toString()
     {
-        $string = is_null($this->viewportSize) ? '' : $this->viewportSize;
-        $string .= is_null($this->zoom) ? '' : '_z' . $this->zoom;
-        $string .= is_null($this->paperFormat) ? '' : '_' . $this->paperFormat;
-        $string .= is_null($this->commandForImagemagick) ? '' : '~' . $this->commandForImagemagick;
-
-        return $string;
+        $parts = array(
+            $this->viewportSize,
+            $this->zoom ? 'z' . str_replace('.', '', $this->zoom) : null,
+            $this->paperFormat
+        );
+        return join('_', array_filter($parts)) . ($this->commandForImagemagick ? '~' . $this->commandForImagemagick : '');
     }
 }
