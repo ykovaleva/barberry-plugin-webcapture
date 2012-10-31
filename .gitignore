@@ -1,3 +1,6 @@
 /.idea
 /composer.lock
 /vendor
+/barberry-directions
+/barberry-monitors
+/tmp
