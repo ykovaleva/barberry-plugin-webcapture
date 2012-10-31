@@ -56,7 +56,7 @@ class ConverterTest extends \PHPUnit_Framework_TestCase
     {
         include_once __DIR__ . '/FakePngToJpgDirection.php';
         self::converter(ContentType::jpeg())->convert(self::bin(), self::commandWithImagemagickPart());
-        $this->assertTrue(\PngToJpgDirection::$hasBeenUtilized);
+        $this->assertTrue(\Barberry\Direction\PngToJpgDirection::$hasBeenUtilized);
     }
 
     private static function converter($targetDirection)
