@@ -1,8 +1,7 @@
 <?php
+namespace Barberry\Plugin\Webcapture;
 
-use Barberry\Plugin\Webcapture\Command;
-
-class CommandTest extends PHPUnit_Framework_TestCase
+class CommandTest extends \PHPUnit_Framework_TestCase
 {
     public function testNoParamsByDefault()
     {
@@ -12,13 +11,13 @@ class CommandTest extends PHPUnit_Framework_TestCase
 
     public function testCreatesImagemagickCommand()
     {
-        $command = self::command('10x10_z0.5_a9~100x200');
+        $command = self::command('10x10_z05_a9~100x200');
         $this->assertEquals('100x200', $command->commandForImagemagick());
     }
 
     public function testExtractsZoomParameter()
     {
-        $command = self::command('10x10_z0.2~100x200');
+        $command = self::command('10x10_z02~100x200');
         $this->assertEquals(0.2, $command->zoom());
     }
 
@@ -42,9 +41,34 @@ class CommandTest extends PHPUnit_Framework_TestCase
 
     public function testAmbiguityCommand()
     {
-        $this->assertFalse(self::command('105x105_z0.25d%_a5~100x200')->conforms('105x105_z0.25_a5~100x200'));
+        $this->assertFalse(self::command('105x105_z025d%_a5~100x200')->conforms('105x105_z025_a5~100x200'));
     }
 
+    /**
+     * @dataProvider commandsWithZoomFactor
+     */
+    public function testDifferentZoomFactors($command, $expectedZoom)
+    {
+        $this->assertEquals($expectedZoom, self::command($command)->zoom());
+    }
+
+    public static function commandsWithZoomFactor()
+    {
+        return array(
+            array('z1', 1),
+            array('z1~100x100', 1),
+            array('z01', 0.1),
+            array('z025', 0.25),
+            array('z25', null),
+            array('z12', null),
+            array('100x_z1_a3~10x10', 1),
+        );
+    }
+
+    /**
+     * @param null $commandString
+     * @return Command
+     */
     private static function command($commandString = null)
     {
         $command = new Command();
