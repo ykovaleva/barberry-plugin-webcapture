@@ -31,10 +31,10 @@ class Command implements InterfaceCommand
 
         foreach ($params as $param) {
             if (preg_match('/^([\d]+x[\d]+)$/', $param, $match)) {
-                $this->viewportSize = strlen($match[1]) ? $match[1] : null;
+                $this->viewportSize = $match[1];
             }
-            if (preg_match('/^z(0\.[\d]+)$/', $param, $match)) {
-                $this->zoom = strlen($match[1]) ? (float)$match[1] : null;
+            if (preg_match('/^z(1|0[\d]+)$/', $param, $match)) {
+                $this->zoom = floatval($match[1][0] == 0 ? '0.'. substr($match[1], 1) : $match[1]);
             }
             $formats = implode('|', self::$allowedPaperFormats);
             if (preg_match('/^(' . $formats . ')$/', $param, $match)) {
