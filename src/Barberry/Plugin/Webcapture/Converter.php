@@ -74,7 +74,7 @@ class Converter implements Plugin\InterfaceConverter
     {
         $from = ucfirst(ContentType::byString($bin)->standartExtention());
         $to = ucfirst($this->targetContentType->standartExtention());
-        $directionClass = '\\' . $from . 'To' . $to . 'Direction';
+        $directionClass = '\\Barberry\\Direction\\' . $from . 'To' . $to . 'Direction';
 
         if (class_exists($directionClass)) {
             $direction = new $directionClass($commandString);
