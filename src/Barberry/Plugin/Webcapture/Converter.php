@@ -23,11 +23,15 @@ class Converter implements Plugin\InterfaceConverter
     {
         if (!is_null($command->commandForImagemagick())) {
             // get png for imagemagick
-            $bin = $this->runPhantomJs('png', $bin, $command->zoom(), $command->paperFormat());
-            $bin = $this->resizeWithImagemagick($bin, $command->commandForImagemagick());
+            $bin = $this->runPhantomJs(
+                 'png', $bin, $command->viewportSize(), $command->zoom(), $command->paperFormat()
+            );
+            $bin = $this->resizeWithImagemagick($bin, $command->viewportSize(), $command->commandForImagemagick());
         } else {
             $extension = $this->targetContentType->standartExtention();
-            $bin = $this->runPhantomJs($extension, $bin, $command->zoom(), $command->paperFormat());
+            $bin = $this->runPhantomJs(
+                $extension, $bin, $command->viewportSize(), $command->zoom(), $command->paperFormat()
+            );
         }
 
         if (is_null($bin)) {
@@ -37,17 +41,18 @@ class Converter implements Plugin\InterfaceConverter
         return $bin;
     }
 
-    protected function runPhantomJs($extension, $bin, $zoom, $paperFormat)
+    protected function runPhantomJs($extension, $bin, $viewportSize, $zoom, $paperFormat)
     {
         $tempFile = $this->createTempFile($extension);
 
         // undefined failure with phantom js, so try to create file with phantomjs 5 times
         $i = 0;
         do {
-            exec(
+            echo exec(
                 'phantomjs ' . escapeshellarg($this->jsScriptFile) . ' '
                     . escapeshellarg($bin) . ' '
                     . escapeshellarg($tempFile) . ' '
+                    . escapeshellarg($viewportSize) . ' '
                     . escapeshellarg($zoom). ' '
                     . escapeshellarg($paperFormat)
             );

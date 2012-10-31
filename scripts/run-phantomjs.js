@@ -3,13 +3,27 @@
 var page = require('webpage').create();
 var system = require('system');
 
-page.open(system.args[1], function(status) {
-    if (status !== "success") {
+var url = system.args[1];
+var destinationFile = system.args[2];
+var viewportSize = system.args[3];
+var zoom = system.args[4];
+var paperSize = system.args[5]; /* paper format for pdf */
+
+page.onLoadFinished = function (status) {
+    if (status !== 'success') {
         console.log("PhantomJS: Unable to access network");
     } else {
-        page.zoomFactor = system.args[3];
-        page.paperSize = { format: system.args[4] };
-        page.render(system.args[2]);
+        if (viewportSize != '') {
+            var params = viewportSize.split('x');
+            var width = params[0];
+            var height = params[1];
+            page.viewportSize = { width: width, height: height };
+        }
+        page.zoomFactor = zoom;
+        page.paperSize = { format: paperSize };
+        page.render(destinationFile);
     }
     phantom.exit();
-});
+}
+
+page.open(url);

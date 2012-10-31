@@ -61,13 +61,13 @@ class ConverterTest extends \PHPUnit_Framework_TestCase
     private static function command()
     {
         $command = new Command();
-        return $command->configure('0.9zoom_tabloid');
+        return $command->configure('z0.9_tabloid');
     }
 
     private static function commandWithImagemagickPart()
     {
         $command = new Command();
-        return $command->configure('0.9_tabloid~100x200');
+        return $command->configure('1055x10_z0.9_tabloid~100x200');
     }
 
     private static function bin()
