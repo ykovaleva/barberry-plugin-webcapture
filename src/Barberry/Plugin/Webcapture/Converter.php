@@ -48,7 +48,7 @@ class Converter implements Plugin\InterfaceConverter
         // undefined failure with phantom js, so try to create file with phantomjs 5 times
         $i = 0;
         do {
-            echo exec(
+            exec(
                 'phantomjs ' . escapeshellarg($this->jsScriptFile) . ' '
                     . escapeshellarg($bin) . ' '
                     . escapeshellarg($tempFile) . ' '

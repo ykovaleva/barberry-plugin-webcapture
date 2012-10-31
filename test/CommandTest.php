@@ -62,6 +62,28 @@ class CommandTest extends \PHPUnit_Framework_TestCase
             array('z25', null),
             array('z12', null),
             array('100x_z1_a3~10x10', 1),
+            array('1000x100_z025', 0.25),
+        );
+    }
+
+    /**
+     * @dataProvider differentCorrectCommands
+     */
+    public function testCorrectCommandsAreConformsToItsTextualRepresentation($command)
+    {
+        $this->assertTrue(self::command($command)->conforms($command));
+    }
+
+    public static function differentCorrectCommands()
+    {
+        return array(
+            array('z1'),
+            array('z1~100x100'),
+            array('z01'),
+            array('1024x800_z025'),
+            array('1000x100~25x10'),
+            array('1000x100_a4~25x10'),
+            array('1000x100_z1_letter~25x10_beee_23'),
         );
     }
 
