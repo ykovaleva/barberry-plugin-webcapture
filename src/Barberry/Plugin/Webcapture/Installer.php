@@ -4,7 +4,7 @@ namespace Barberry\Plugin\Webcapture;
 
 use Barberry\Plugin;
 use Barberry\Direction;
-use Barberry\Monitor;
+use Barberry\Monitor\ComposerInterface as MonitorComposerInterface;
 use Barberry\ContentType;
 
 class Installer implements Plugin\InterfaceInstaller
@@ -16,7 +16,7 @@ class Installer implements Plugin\InterfaceInstaller
         $this->tempDir = $tempDir;
     }
 
-    public function install(Direction\ComposerInterface $directionComposer, Monitor\ComposerInterface $monitorComposer,
+    public function install(Direction\ComposerInterface $directionComposer, MonitorComposerInterface $monitorComposer,
                             $pluginParams = array())
     {
         foreach ($this->directions() as $pair) {

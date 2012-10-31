@@ -6,6 +6,12 @@ use Barberry\ContentType;
 
 class ConverterTest extends \PHPUnit_Framework_TestCase
 {
+    public static function setUpBeforeClass()
+    {
+        $monitor = new Monitor('/tmp');
+        self::assertEquals(array(), $monitor->reportUnmetDependencies());
+    }
+
     public function testThrowsExceptionWhenPhantomJsFailsToCreateDestinationFile()
     {
         $this->setExpectedException('Barberry\\Plugin\\Webcapture\\PhantomJsException');
