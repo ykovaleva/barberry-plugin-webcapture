@@ -4,7 +4,7 @@
     "require": {
         "barberry/plugin-installer": "*",
         "barberry/interfaces": "*",
-        "barberry/plugin-imagemagic": "*"
+        "barberry/plugin-imagemagick": "*"
     },
     "minimum-stability": "dev",
     "authors": [
