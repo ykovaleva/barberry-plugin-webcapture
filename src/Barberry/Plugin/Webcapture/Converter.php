@@ -12,11 +12,12 @@ class Converter implements Plugin\InterfaceConverter
     private $jsScriptFile;
     private $targetContentType;
 
-    public function __construct(ContentType $targetContentType, $tempDir)
+    public function configure(ContentType $targetContentType, $tempDir)
     {
         $this->tempDir = $tempDir;
         $this->jsScriptFile = realpath(__DIR__ . '/../../../../scripts/run-phantomjs.js');
         $this->targetContentType = $targetContentType;
+        return $this;
     }
 
     public function convert($bin, Plugin\InterfaceCommand $command = null)
@@ -42,11 +43,11 @@ class Converter implements Plugin\InterfaceConverter
 
     protected function runPhantomJs($extension, $bin, $viewportSize, $zoom, $paperFormat)
     {
-        $tempFile = $this->createTempFile($extension);
-
         // undefined failure with phantom js, so try to create file with phantomjs 5 times
         $i = 0;
         do {
+            $tempFile = $this->createTempFile($extension);
+
             $phantomJs = exec(
                 'phantomjs ' . escapeshellarg($this->jsScriptFile) . ' '
                     . escapeshellarg($bin) . ' '
@@ -55,16 +56,22 @@ class Converter implements Plugin\InterfaceConverter
                     . escapeshellarg($zoom). ' '
                     . escapeshellarg($paperFormat)
             );
+
+            $result = filesize($tempFile) ? file_get_contents($tempFile) : null;
+            unlink($tempFile);
+
             if (strlen($phantomJs)) {
                 throw new PhantomJsException('phantom js failed to execute');
             }
+
+            if ($result) {
+                return $result;
+            }
+
             $i++;
-        } while ($i < 5 && !filesize($tempFile));
+        } while ($i < 5);
 
-        $result = filesize($tempFile) ? file_get_contents($tempFile) : null;
-        unlink($tempFile);
-
-        return $result;
+        return null;
     }
 
     /**

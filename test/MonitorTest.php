@@ -48,18 +48,24 @@ class MonitorTest extends \PHPUnit_Framework_TestCase
 
     public function testReportsNoErrorsIfDirectoryIsWritable()
     {
-        $monitor = new Monitor($this->testDirWritable);
+        $monitor = self::monitor($this->testDirWritable);
         $this->assertEquals(array(), $monitor->reportMalfunction());
     }
 
     public function testReportsErrorsIfDirectoryIsNotWritable()
     {
-        $monitor = new Monitor($this->testDirNotWritable);
+        $monitor = self::monitor($this->testDirNotWritable);
         $this->assertEquals(
             array(
                 'ERROR: Temporary directory is not writable (Webcapture plugin)'
             ),
             $monitor->reportMalfunction()
         );
+    }
+
+    private static function monitor($tempDir)
+    {
+        $monitor = new Monitor;
+        return $monitor->configure($tempDir);
     }
 }

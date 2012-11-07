@@ -10,9 +10,10 @@ class Monitor implements InterfaceMonitor
 
     private $tempDir;
 
-    public function __construct($tempDir = '')
+    public function configure($tempDir)
     {
         $this->tempDir = $tempDir;
+        return $this;
     }
 
     /**
@@ -59,7 +60,7 @@ class Monitor implements InterfaceMonitor
     }
 
     /**
-     * @param $dir directory to be tested
+     * @param string $dir directory to be tested
      * @return null|string error message
      */
     private function reportDirectoryIsWritable($dir)

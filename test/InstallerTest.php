@@ -13,7 +13,10 @@ class InstallerTest extends \PHPUnit_Framework_TestCase
 
         foreach (Installer::directions() as $direction) {
             $composer->shouldReceive('writeClassDeclaration')->with(
-                equalTo($direction[0]), equalTo(eval('return ' . $direction[1] . ';')), anything(), anything()
+                equalTo($direction[0]),
+                equalTo($direction[1]),
+                anything(),
+                anything()
             )->once();
         }
 
@@ -24,12 +27,9 @@ class InstallerTest extends \PHPUnit_Framework_TestCase
     public function testDelegatesCreationOfWebcaptureMonitor()
     {
         $composer = m::mock('Barberry\\Monitor\\ComposerInterface');
-        $composer->shouldReceive('writeClassDeclaration')->with(
-            'Webcapture',
-            anything()
-        )->once();
+        $composer->shouldReceive('writeClassDeclaration')->with('Webcapture')->once();
 
-        $installer = new Installer(__DIR__ . '/../tmp/');
+        $installer = new Installer();
         $installer->install($this->getMock('Barberry\\Direction\\ComposerInterface'), $composer);
     }
 }

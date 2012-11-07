@@ -8,7 +8,8 @@ class ConverterTest extends \PHPUnit_Framework_TestCase
 {
     public static function setUpBeforeClass()
     {
-        $monitor = new Monitor('/tmp');
+        $monitor = new Monitor();
+        $monitor->configure('/tmp');
         self::assertEquals(array(), $monitor->reportUnmetDependencies());
     }
 
@@ -18,9 +19,9 @@ class ConverterTest extends \PHPUnit_Framework_TestCase
 
         $converter = $this->getMock(
             'Barberry\\Plugin\\Webcapture\\Converter',
-            array('runPhantomJs'),
-            array(ContentType::jpeg(), null)
+            array('runPhantomJs')
         );
+        $converter->configure(ContentType::jpeg(), null);
         $converter->convert(self::bin(), self::command());
     }
 
@@ -69,7 +70,8 @@ class ConverterTest extends \PHPUnit_Framework_TestCase
 
     private static function converter($targetDirection)
     {
-        return new Converter($targetDirection, __DIR__ . '/../tmp/');
+        $converter = new Converter();
+        return $converter->configure($targetDirection, __DIR__ . '/../tmp/');
     }
 
     private static function command()
