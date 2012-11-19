@@ -23,7 +23,7 @@ class Converter implements Plugin\InterfaceConverter
     public function convert($bin, Plugin\InterfaceCommand $command = null)
     {
         $bin = $this->runPhantomJs(
-            is_null($command->commandForImagemagick()) ? $this->targetContentType->standartExtention() : 'png',
+            is_null($command->commandForImagemagick()) ? $this->targetContentType->standardExtension() : 'png',
             $bin,
             $command->viewportSize(),
             $command->zoom(),
@@ -82,8 +82,8 @@ class Converter implements Plugin\InterfaceConverter
      */
     protected function resizeWithImagemagick($bin, $commandString)
     {
-        $from = ucfirst(ContentType::byString($bin)->standartExtention());
-        $to = ucfirst($this->targetContentType->standartExtention());
+        $from = ucfirst(ContentType::byString($bin)->standardExtension());
+        $to = ucfirst($this->targetContentType->standardExtension());
         $directionClass = '\\Barberry\\Direction\\' . $from . 'To' . $to . 'Direction';
         $direction = new $directionClass($commandString);
         return $direction->convert($bin);
