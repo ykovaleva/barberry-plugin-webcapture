@@ -20,13 +20,36 @@ if (paperSize !== undefined) {
     page.paperSize = { format: paperSize };
 }
 
-page.onLoadFinished = function (status) {
-    if (status !== 'success') {
-        console.log("PhantomJS: Unable to access network");
-    } else {
-        page.render(destinationFile);
+var requested = 0;
+var loaded = 0;
+page.onResourceRequested = function() { requested++; }
+page.onResourceReceived = function(response) {
+    if (response.stage == 'end') {
+        loaded++;
     }
-    phantom.exit();
 }
 
-page.open(url);
+page.open(url, function(status) {
+    if (status !== 'success') {
+        console.log("PhantomJS: Unable to access network");
+        phantom.exit();
+    } else {
+        var attempt = 0;
+        var delay = window.setInterval(function() {
+            if (attempt < 10) {
+                if (requested == loaded) {
+                    window.clearInterval(delay);
+                    page.render(destinationFile);
+                    phantom.exit();
+                } else {
+                    attempt++;
+                }
+            } else {
+                window.clearInterval(delay);
+                page.render(destinationFile);
+                console.log('Failed to wait for all page resources being loaded.');
+                phantom.exit();
+            }
+        }, 500);
+    }
+});
