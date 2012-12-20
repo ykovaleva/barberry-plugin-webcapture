@@ -68,6 +68,22 @@ class ConverterTest extends \PHPUnit_Framework_TestCase
         $this->assertTrue(\Barberry\Direction\PngToJpgDirection::$hasBeenUtilized);
     }
 
+    public function testNotFailsIfCalledManyTimes()
+    {
+        $converter = self::converter(ContentType::png());
+        $urls = array(
+            'http://novadoo.com',
+            'http://www.smashingmagazine.com',
+            'http://smashingmagazine.com',
+            'http://nettuts.com',
+            'http://habrahabr.ru'
+        );
+        foreach ($urls as $url) {
+            $result = $converter->convert($url, self::command());
+            $this->assertEquals(ContentType::png(), ContentType::byString($result));
+        }
+    }
+
     private static function converter($targetDirection)
     {
         $converter = new Converter();

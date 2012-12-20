@@ -29,6 +29,11 @@ page.onResourceReceived = function(response) {
     }
 }
 
+// do nothing if page has js errors
+page.onError = function() {
+    return;
+}
+
 page.open(url, function(status) {
     if (status !== 'success') {
         console.log("PhantomJS: Unable to access network");

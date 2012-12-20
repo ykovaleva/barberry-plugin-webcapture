@@ -43,35 +43,25 @@ class Converter implements Plugin\InterfaceConverter
 
     protected function runPhantomJs($extension, $bin, $viewportSize, $zoom, $paperFormat)
     {
-        // undefined failure with phantom js, so try to create file with phantomjs 5 times
-        $i = 0;
-        do {
-            $tempFile = $this->createTempFile($extension);
+        $tempFile = $this->createTempFile($extension);
 
-            $phantomJs = exec(
-                'phantomjs ' . escapeshellarg($this->jsScriptFile) . ' '
-                    . escapeshellarg($bin) . ' '
-                    . escapeshellarg($tempFile) . ' '
-                    . escapeshellarg($viewportSize) . ' '
-                    . escapeshellarg($zoom). ' '
-                    . escapeshellarg($paperFormat)
-            );
+        $phantomJs = exec(
+            'phantomjs ' . escapeshellarg($this->jsScriptFile) . ' '
+                . escapeshellarg($bin) . ' '
+                . escapeshellarg($tempFile) . ' '
+                . escapeshellarg($viewportSize) . ' '
+                . escapeshellarg($zoom). ' '
+                . escapeshellarg($paperFormat)
+        );
 
-            $result = filesize($tempFile) ? file_get_contents($tempFile) : null;
-            unlink($tempFile);
+        $result = filesize($tempFile) ? file_get_contents($tempFile) : null;
+        unlink($tempFile);
 
-            if (strlen($phantomJs)) {
-                throw new PhantomJsException('phantom js failed to execute');
-            }
+        if (strlen($phantomJs)) {
+            throw new PhantomJsException('phantom js failed to execute');
+        }
 
-            if ($result) {
-                return $result;
-            }
-
-            $i++;
-        } while ($i < 5);
-
-        return null;
+        return $result;
     }
 
     /**
