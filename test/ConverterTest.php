@@ -63,9 +63,9 @@ class ConverterTest extends \PHPUnit_Framework_TestCase
 
     public function testUtilizesExistingDirectionToExecuteImagemagickCommand()
     {
-        include_once __DIR__ . '/FakePngToJpgDirection.php';
+        include_once __DIR__ . '/FakeDirectionPngToJpg.php';
         self::converter(ContentType::jpeg())->convert(self::bin(), self::commandWithImagemagickPart());
-        $this->assertTrue(\Barberry\Direction\PngToJpgDirection::$hasBeenUtilized);
+        $this->assertTrue(\Barberry\Direction\DirectionPngToJpg::$hasBeenUtilized);
     }
 
     private static function converter($targetDirection)

@@ -1,7 +1,7 @@
 <?php
 namespace Barberry\Direction;
 
-class PngToJpgDirection extends DirectionAbstract
+class DirectionPngToJpg extends DirectionAbstract
 {
 
     public static $hasBeenUtilized = false;
