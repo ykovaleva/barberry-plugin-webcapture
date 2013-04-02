@@ -1,18 +1,18 @@
 {
     "name": "barberry/plugin-webcapture",
     "type": "barberry-plugin",
-    "require": {
-        "barberry/plugin-installer": "*",
-        "barberry/interfaces": "*",
-        "barberry/plugin-imagemagick": "*"
-    },
-    "minimum-stability": "dev",
+    "license": "MIT",
     "authors": [
         {
             "name": "Yulia Kovaleva",
             "email": "ykovaleva@xiag.ch"
         }
     ],
+    "require": {
+        "barberry/plugin-installer": "1.0.*",
+        "barberry/interfaces": "1.1.*",
+        "barberry/plugin-imagemagick": "1.0.*"
+    },
     "autoload": {
         "psr-0": {"Barberry\\Plugin\\Webcapture": "src/"}
     }
