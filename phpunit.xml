@@ -8,10 +8,11 @@
          stopOnError="true"
          stopOnFailure="true"
          syntaxCheck="false"
-         bootstrap="test/bootstrap.php">
+         bootstrap="vendor/autoload.php">
 
     <listeners>
-        <listener class="\Mockery\Adapter\Phpunit\TestListener"> </listener>
+        <listener class="\Mockery\Adapter\Phpunit\TestListener"
+                  file="vendor/mockery/mockery/library/Mockery/Adapter/Phpunit/TestListener.php"> </listener>
     </listeners>
 
     <filter>
@@ -19,5 +20,11 @@
             <directory>./src/Barberry/</directory>
         </whitelist>
     </filter>
+
+    <testsuites>
+        <testsuite>
+            <directory>test</directory>
+        </testsuite>
+    </testsuites>
 
 </phpunit>
