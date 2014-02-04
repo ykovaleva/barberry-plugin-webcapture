@@ -48,6 +48,8 @@ class Converter implements Plugin\InterfaceConverter
         do {
             $tempFile = $this->createTempFile($extension);
 
+            session_id('singleton');
+            session_start();
             $phantomJs = exec(
                 'phantomjs ' . escapeshellarg($this->jsScriptFile) . ' '
                     . escapeshellarg($bin) . ' '
@@ -56,6 +58,7 @@ class Converter implements Plugin\InterfaceConverter
                     . escapeshellarg($zoom). ' '
                     . escapeshellarg($paperFormat)
             );
+            session_write_close();
 
             $result = filesize($tempFile) ? file_get_contents($tempFile) : null;
             unlink($tempFile);
